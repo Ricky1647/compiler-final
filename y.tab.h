@@ -55,12 +55,14 @@ extern int yydebug;
     YYerror = 256,                 /* error  */
     YYUNDEF = 257,                 /* "invalid token"  */
     NAME = 258,                    /* NAME  */
-    START = 259,                   /* START  */
-    END = 260,                     /* END  */
-    AS = 261,                      /* AS  */
-    DECLARE = 262,                 /* DECLARE  */
-    INTEGER = 263,                 /* INTEGER  */
-    FLOAT = 264                    /* FLOAT  */
+    NUMBER = 259,                  /* NUMBER  */
+    START = 260,                   /* START  */
+    END = 261,                     /* END  */
+    AS = 262,                      /* AS  */
+    PROGRAM = 263,                 /* PROGRAM  */
+    DECLARE = 264,                 /* DECLARE  */
+    INTEGER = 265,                 /* INTEGER  */
+    FLOAT = 266                    /* FLOAT  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -70,24 +72,27 @@ extern int yydebug;
 #define YYerror 256
 #define YYUNDEF 257
 #define NAME 258
-#define START 259
-#define END 260
-#define AS 261
-#define DECLARE 262
-#define INTEGER 263
-#define FLOAT 264
+#define NUMBER 259
+#define START 260
+#define END 261
+#define AS 262
+#define PROGRAM 263
+#define DECLARE 264
+#define INTEGER 265
+#define FLOAT 266
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 7 "final.y"
+#line 20 "final.y"
 
 	double dval;
 	int vblno;
     char* reserved;
+    // strcut symbol* sym;
 
-#line 91 "y.tab.h"
+#line 96 "y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
