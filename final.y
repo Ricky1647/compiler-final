@@ -6,6 +6,7 @@ char* string_array[20];
 int array_index = 0;
 int cur_index = 0;
 int branch = 0;
+int temp = 0;
 char* program_name[20];
 // struct symbol array[20000000];
 HashTable Mytable;
@@ -24,8 +25,8 @@ char* num_list[20];
     // strcut symbol* sym;
 }
 %left '-' '+'
-%left '*' '/'
 %nonassoc UMINUS
+%left '*' '/'
 
 
 %token <reserved> NAME
@@ -46,10 +47,19 @@ char* num_list[20];
 %type <reserved> assignment;
 %type <reserved> arithmetic;
 %type <symbol> expression;
+%type <reserved> dummy;
 // %type <sym> expression;
 
 %%
-PROG: PRO_HEADER START statement_list END {printf("%-10sHALT %s\n", "", program_name);}
+PROG: PRO_HEADER START statement_list END {
+    printf("%-10sHALT %s\n\n", "", program_name);
+    for (int i = 1; i <= temp; i++){
+        char tmpname[256];
+        bzero(tmpname, 256);
+        sprintf(tmpname, "T&%d", i);
+        printf("%-10sDeclare %s, Float\n","", tmpname);
+    }
+}
 
 PRO_HEADER: PROGRAM PRO_NAME {
                                 printf("%-10sSTART %s\n", "", $2);
@@ -70,46 +80,77 @@ statement: vardeclare {}
 
 
 
-forloop: FOR '(' assignment TO NUMBER ')' arithmetic  ENDFOR {
-    printf("%-10sINC %s\n", "", $3);
-    printf("%-10sI_CMP %s,%d\n","", $3, $5);
-    printf("%-10sJL %s\n", "", $7);
+forloop: FOR dummy '(' assignment TO NUMBER ')' arithmetic  ENDFOR {
+    printf("%-10sINC %s\n", "", $4);
+    printf("%-10sI_CMP %s,%d\n","", $4, $6);
+    printf("%-10sJL %s\n", "", $2);
 }
 
-//NAME ':''=' expression  
-arithmetic : {
+
+dummy: {
+
     char target[256];
     bzero(target, 256);
     sprintf(target,"IB&%d",++branch);
     printf("%-10s\n",target);
     $$ = strdup(target);
+}
+//NAME ':''=' expression  
+arithmetic : NAME ':''=' expression ';'{
+        $4->data.singleFloat = $4->data.singleFloat;
+        printf("%-10sF_STORE %s, %s\n", "", $4->name, $1);
+
     }
 
 //     | NAME '[' NUMBER ']' ':=' expression[
 
 //     ]
 
-// expression: expression '+' expression { 
-//         $$ = $1 + $3; 
-//     }
+expression: expression '+' expression { 
+        char newTemp[256];
+        sprintf(newTemp, "T&%d", ++temp);
+        insert(&Mytable, newTemp, 0);
+        printf("%-10sF_ADD %s, %s, %s\n", "", newTemp,$1->name, $3->name);
+        $$ = search(&Mytable, newTemp);
+    }
 
-// 	|	expression '-' expression { 
-//         $$ = $1 - $3; 
-//     }
-//     |	NAME{ 
-//         DataContainer *tmp = search(&Mytable, $1);
-//         $$ = tmp; 
-//         // printf("%-10s%s, ", "", $1);
-//     }
+	|	expression '-' expression { 
+        char newTemp[256];
+        sprintf(newTemp, "T&%d", ++temp);
+        insert(&Mytable, newTemp, 0);
+        printf("%-10sF_SUB %s, %s, %s\n", "", newTemp,$1->name, $3->name);
+        $$ = search(&Mytable, newTemp);
+    }
 
-//     |   NAME '[' NAME ']' {
-//         DataContainer *tmpArray = search(&Mytable, $1);
-//         DataContainer *tmpInt = search(&Mytable, $3);
-//         tmpArray->index = tmpInt.singleInt;
-//         $$ = tmpArray;
-//         // printf("%-10s%s[%s], ", "", $1, $3);
-//     }
-// 	;
+	|	expression '*' expression { 
+        char newTemp[256];
+        sprintf(newTemp, "T&%d", ++temp);
+        insert(&Mytable, newTemp, 0);
+        printf("%-10sF_MUL %s, %s, %s\n", "", newTemp,$1->name, $3->name);
+        $$ = search(&Mytable, newTemp);
+    }
+    |   '-' expression %prec UMINUS	{ 
+        char newTemp[256];
+        sprintf(newTemp, "T&%d", ++temp);
+        insert(&Mytable, newTemp, 0);
+        printf("%-10sF_UMINUS %s, %s\n", "", newTemp, $2->name);
+        $$ = search(&Mytable, newTemp);
+    }
+    |	NAME{ 
+        DataContainer *tmp = search(&Mytable, $1);
+        $$ = tmp; 
+        // printf("%-10s%s, ", "", $1);
+    }
+
+    |   NAME '[' NAME ']' {
+        DataContainer *tmpArray = search(&Mytable, $1);
+        DataContainer *tmpInt = search(&Mytable, $3);
+        tmpArray->indexPar = strdup($3);
+        tmpArray->index = tmpInt->data.singleInt;
+        $$ = tmpArray;
+        // printf("%-10s%s[%s], ", "", $1, $3);
+    }
+	;
 
 
 
@@ -141,7 +182,7 @@ assignment:
     }
     ;
 
-vardeclare: DECLARE varlist AS vartype {
+vardeclare: DECLARE varlist AS vartype ';'{
     for(; cur_index < array_index; cur_index++){
         DataContainer* tmp = search(&Mytable, string_array[cur_index]);
         if(strcmp("FLOAT", $4) == 0) {

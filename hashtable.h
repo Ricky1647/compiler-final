@@ -15,11 +15,12 @@ typedef union {
     float *floatArray;
 } DataUnion;
 
-typedef struct {
+typedef struct DataContainer{
     DataUnion data;
     int dataType;
     int size;
     int index;
+    char *indexPar;
     char *name;
 } DataContainer;
 

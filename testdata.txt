@@ -2,16 +2,12 @@ Program testP
 
 Begin 
 
- declare I as integer
- declare E as float
- declare LLL[100],LAL[100] as float
- declare A,B,C,D as float
- declare LDL[100],LWL[20] as integer
- I:=1
- E:=2.1
- LLL[0]:=1.1
+ declare I as integer;
+ declare E as float;
+ declare LLL[100],LAL[100] as float;
+ declare A,B,C,D,Q,P as float;
+ declare LDL[100],LWL[20] as integer;
  FOR (I:=1 TO 100)
- ENDFOR
- FOR (I:=1 TO 100)
+  A:=-D-C*P+Q;
  ENDFOR
 End
