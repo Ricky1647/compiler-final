@@ -24,8 +24,23 @@ var [a-zA-Z][a-zA-Z0-9]*
     // printf("get AS\n");
     return AS;
 }
+[fF][oO][rR] {
+    return FOR;
+}
+[eE][nN][dD][fF][oO][rR] {
+    return ENDFOR;
+}
+[tT][oO] {
+    return TO;
+}
 [iI][nN][tT][eE][gG][eE][rR] {return INTEGER;}
 [fF][lL][oO][aA][tT] {return FLOAT;}
+
+(([0-9]*)\.[0-9]*) {
+		yylval.fval = atof(yytext);
+        //printf("%f\n", yylval.fval);
+		return FNUMBER;
+	}
 
 {digit} {
     yylval.vblno = atoi(yytext);

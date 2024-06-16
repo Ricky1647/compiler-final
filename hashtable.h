@@ -7,9 +7,25 @@
 
 #define TABLE_SIZE 100
 
+
+typedef union {
+    int singleInt;
+    float singleFloat;
+    int *intArray;
+    float *floatArray;
+} DataUnion;
+
+typedef struct {
+    DataUnion data;
+    int dataType;
+    int size;
+    int index;
+    char *name;
+} DataContainer;
+
 typedef struct Node {
     char *key;
-    char *value;
+    DataContainer *value;
     struct Node *next;
 } Node;
 
@@ -19,8 +35,8 @@ typedef struct HashTable {
 
 unsigned int hash(const char *key);
 void create_table(struct HashTable *table);
-void insert(HashTable *table, const char *key, const char *value);
-char *search(HashTable *table, const char *key);
+void insert(HashTable *table, const char *key, int arrayLength);
+DataContainer *search(HashTable *table, const char *key);
 void delete(HashTable *table, const char *key);
 void free_table(HashTable *table);
 

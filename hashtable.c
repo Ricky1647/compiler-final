@@ -20,16 +20,25 @@ void create_table(struct HashTable *table) {
 }
 
 
-void insert(HashTable *table, const char *key, const char *value) {
+void insert(HashTable *table, const char *key, int arrayLenth) {
     unsigned int bucket = hash(key);
     Node *new_node = (Node *)malloc(sizeof(Node));
     new_node->key = strdup(key);
-    new_node->value = strdup(value);
+    new_node->value = (DataContainer *)malloc(sizeof(DataContainer));
+    new_node->value->name = strdup(key);
+    if(arrayLenth > 0){
+        new_node->value->dataType = 1;
+        new_node->value->size = arrayLenth;
+    }
+    else{
+        new_node->value->dataType = 0;
+        new_node->value->size = 1;
+    }
     new_node->next = table->buckets[bucket];
     table->buckets[bucket] = new_node;
 }
 
-char *search(HashTable *table, const char *key) {
+DataContainer *search(HashTable *table, const char *key) {
     unsigned int bucket = hash(key);
     Node *node = table->buckets[bucket];
     while (node != NULL && strcmp(node->key, key) != 0) {

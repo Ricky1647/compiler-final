@@ -7,5 +7,11 @@ Begin
  declare LLL[100],LAL[100] as float
  declare A,B,C,D as float
  declare LDL[100],LWL[20] as integer
-
+ I:=1
+ E:=2.1
+ LLL[0]:=1.1
+ FOR (I:=1 TO 100)
+ ENDFOR
+ FOR (I:=1 TO 100)
+ ENDFOR
 End
