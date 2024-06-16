@@ -111,7 +111,18 @@ expression: expression '+' expression {
         char newTemp[256];
         sprintf(newTemp, "T&%d", ++temp);
         insert(&Mytable, newTemp, 0);
-        printf("%-10sF_ADD %s, %s, %s\n", "", newTemp,$1->name, $3->name);
+        if($1->dataType == 1 && $3->dataType ==1){
+            printf("%-10sF_ADD %s[%s], %s[%s], %s\n", "",$1->name, $1->indexPar, $3->name, $3->indexPar, newTemp);
+        }
+        else if($3->dataType == 1){
+            printf("%-10sF_ADD %s, %s[%s], %s\n", "",$1->name, $3->name, $3->indexPar, newTemp);
+        }
+        else if($1->dataType == 1 ){
+            printf("%-10sF_ADD %s[%s], %s, %s\n", "",$1->name, $1->indexPar, $3->name, newTemp);
+        }
+        else{
+            printf("%-10sF_ADD %s, %s, %s\n", "",$1->name, $3->name, newTemp);
+        }
         $$ = search(&Mytable, newTemp);
     }
 
@@ -119,7 +130,18 @@ expression: expression '+' expression {
         char newTemp[256];
         sprintf(newTemp, "T&%d", ++temp);
         insert(&Mytable, newTemp, 0);
-        printf("%-10sF_SUB %s, %s, %s\n", "", newTemp,$1->name, $3->name);
+        if($1->dataType == 1 && $3->dataType ==1){
+            printf("%-10sF_SUB %s[%s], %s[%s], %s\n", "",$1->name, $1->indexPar, $3->name, $3->indexPar, newTemp);
+        }
+        else if($3->dataType == 1){
+            printf("%-10sF_SUB %s, %s[%s], %s\n", "",$1->name, $3->name, $3->indexPar, newTemp);
+        }
+        else if($1->dataType == 1 ){
+            printf("%-10sF_SUB %s[%s], %s, %s\n", "",$1->name, $1->indexPar, $3->name, newTemp);
+        }
+        else{
+            printf("%-10sF_SUB %s, %s, %s\n", "",$1->name, $3->name, newTemp);
+        }
         $$ = search(&Mytable, newTemp);
     }
 
@@ -127,14 +149,31 @@ expression: expression '+' expression {
         char newTemp[256];
         sprintf(newTemp, "T&%d", ++temp);
         insert(&Mytable, newTemp, 0);
-        printf("%-10sF_MUL %s, %s, %s\n", "", newTemp,$1->name, $3->name);
+        if($1->dataType == 1 && $3->dataType ==1){
+            printf("%-10sF_MUL %s[%s], %s[%s], %s\n", "",$1->name, $1->indexPar, $3->name, $3->indexPar, newTemp);
+        }
+        else if($3->dataType == 1){
+            printf("%-10sF_MUL %s, %s[%s], %s\n", "",$1->name, $3->name, $3->indexPar, newTemp);
+        }
+        else if($1->dataType == 1 ){
+            printf("%-10sF_MUL %s[%s], %s, %s\n", "",$1->name, $1->indexPar, $3->name, newTemp);
+        }
+
+        else{
+            printf("%-10sF_MUL %s, %s, %s\n", "",$1->name, $3->name, newTemp);
+        }
         $$ = search(&Mytable, newTemp);
     }
     |   '-' expression %prec UMINUS	{ 
         char newTemp[256];
         sprintf(newTemp, "T&%d", ++temp);
         insert(&Mytable, newTemp, 0);
-        printf("%-10sF_UMINUS %s, %s\n", "", newTemp, $2->name);
+        if($2->dataType == 2){
+            printf("%-10sF_UMINUS %s[%s], %s\n", "", $2->name, $2->indexPar, newTemp);
+        }
+        else{
+            printf("%-10sF_UMINUS %s, %s\n", "", $2->name, newTemp);
+        }
         $$ = search(&Mytable, newTemp);
     }
     |	NAME{ 
