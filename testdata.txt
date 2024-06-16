@@ -8,6 +8,6 @@ Begin
  declare A,B,C,D,Q,P as float;
  declare LDL[100],LWL[20] as integer;
  FOR (I:=1 TO 100)
-  A:=-D-C*P+Q;
+  A:=-D-C*P+Q+T;
  ENDFOR
 End

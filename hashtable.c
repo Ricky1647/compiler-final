@@ -44,7 +44,11 @@ DataContainer *search(HashTable *table, const char *key) {
     while (node != NULL && strcmp(node->key, key) != 0) {
         node = node->next;
     }
-    if (node == NULL) return NULL;
+    if (node == NULL) {
+        printf("%s is not defined\n", key);
+
+        exit(-1);
+    }
     return node->value;
 }
 

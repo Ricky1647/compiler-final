@@ -15,6 +15,7 @@ HashTable Mytable;
 
 char* num_list[20];
 
+
 %}
 
 %union {
